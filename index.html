@@ -25,16 +25,74 @@
 
      }
 
+function reverseString(input){
+     return input.split("").reverse().join("");
+}
+
 function reverseAll(input){
      //http://stackoverflow.com/questions/958908/how-do-you-reverse-a-string-in-place-in-javascript
-     setTextResult(input.split("").reverse().join(""));
+     setTextResult(reverseString(input));
 }
 
 function reverseByLine(input){
-     setTextResult(input.split("\n").reverse().join("\n"));
+     
+     var lines=input.split("\n");
+     var result=new Array();
+
+     for(var l in lines){
+
+	  result[l]=reverseString(lines[l]);
+     }
+
+     setTextResult(result.join('\n'));
+}
+
+function reverseAverage(input){
+
+     var numberString=$("#reverseNumber").val();
+     var reverseNumber=parseInt(numberString);
+
+     if(isNaN(reverseNumber) || reverseNumber<=0){
+
+	  $("#popupNan").popup("open");
+	  $("#reverseNumber").val('2');
+	  onButtonProcess();
+	  return;
+     }
+
+     //force to int number
+     $("#reverseNumber").val(reverseNumber);
+
+     var currentBegin;
+     var currentEnd=0;
+
+     var result="";
+     do{
+	  currentBegin=currentEnd;
+	  currentEnd=currentBegin+reverseNumber;
+	  var segment=input.substring(currentBegin,currentEnd);
+	  result+=reverseString(segment);
+     }while(currentEnd<input.length);
+
+     setTextResult(result);
 }
 
 
+function switchMethod(toUse){
+     processMethod=toUse;
+     onButtonProcess();
+}
+
+function switchReverseMethod(toUse){
+
+     if(toUse==reverseAverage){
+	  $("#divReverseNumber").show();
+     }else{
+	  $("#divReverseNumber").hide();
+     }
+
+     switchMethod(toUse);
+}
     
 var processMethod=reverseAll;
 
@@ -42,8 +100,14 @@ var processMethod=reverseAll;
 
 $(document).ready(function(){
 
+	  $("#methodTabs").on("tabsactivate", function( event, ui ) {
+	       alert(ui);
+	       });
 
-});
+	  $("#divReverseNumber").hide();
+
+	  });
+	  
 
 
 function onButtonProcess(){
@@ -68,6 +132,15 @@ function onButtonProcess(){
 
 
 
+<div data-role="popup" id="popupNan" data-dismissible="false" >
+     <div role="main" class="ui-content">
+	  <h3 class="ui-title">必须填入正数</h3>
+	  <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">OK</a>
+     </div>
+</div>
+
+
+
 
 <div data-role="tabs" id="methodTabs">
   <div data-role="navbar">
@@ -82,14 +155,21 @@ function onButtonProcess(){
        <form>
 	    <fieldset data-role="controlgroup" data-type="horizontal">
 		 <legend>Horizontal:</legend>
-		 <input name="radio-choice-h-2" id="radio-choice-h-2a" value="on" checked="checked" type="radio">
+		 <input name="radio-choice-h-2" id="radio-choice-h-2a" value="on" checked="checked" type="radio" onclick="switchReverseMethod(reverseAll)" >
 		 <label for="radio-choice-h-2a">全部翻转</label>
-		 <input name="radio-choice-h-2" id="radio-choice-h-2b" value="off" type="radio">
+		 <input name="radio-choice-h-2" id="radio-choice-h-2b" value="off" type="radio" onclick="switchReverseMethod(reverseByLine)">
 		 <label for="radio-choice-h-2b">逐行翻转</label>
-		 <input name="radio-choice-h-2" id="radio-choice-h-2c" value="other" type="radio">
+		 <input name="radio-choice-h-2" id="radio-choice-h-2c" value="other" type="radio" onclick="switchReverseMethod(reverseAverage)">
 		 <label for="radio-choice-h-2c">每隔几个字翻转</label>
 	    </fieldset>
        </form>
+
+       <div id="divReverseNumber">
+	    <label for="reverseNumber">每几个字翻转</label>
+	    <input data-clear-btn="false" name="reverseNumber" id="reverseNumber" value="2" type="number">
+       </div>
+
+
   </div>
 
   <div id="methodVertical">
