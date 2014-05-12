@@ -25,6 +25,77 @@
 
      }
 
+function vertialLayout(input){
+     
+    var noNewLine=input.split('\n').join("");
+
+    var totalChar=noNewLine.count();
+
+    var lineWidth=$("#lineWidth").val();
+
+    var nearWidth=$("#nearWidth").val();
+
+    var gapWidth=$("#gapWidth").val();
+
+    var groupWidth=nearWidth+gapWidth;
+
+    var groupNumber=lineWidth/groupWidth;
+
+    var leavingValid=Math.min(nearWidth,lineWidth%groupWidth);
+
+    var validLine=groupNumber*nearWidth+leavingValid;
+
+    var lineNumber=totalChar/validLine+1;
+
+    var snake=(jiBieZhi()==0);
+
+    var result=new Array();
+
+    for(var i in noNewLine){
+	 resut[i]="";
+    }
+
+    for(var j=0;j<lineWidth;++j){
+
+        var groupModule=j%groupWidth;
+        var groupIndex=j/groupWidth;
+
+        if(groupModule<nearWidth){
+
+            var actualWidth=groupIndex*nearWidth+groupModule;
+
+            var odd=(actualWidth%2!=0);
+
+            var lineCounter=0;
+            var offset=1;
+
+            if(snake && odd){
+                lineCounter=lineNumber-1;
+                offset=-1;
+            }
+
+	    var column=noNewLine.substr(actualWidth*lineNumber,lineNumber);
+
+            for(var ch in column){
+                result[lineCounter].append(ch);
+                if(ch.unicode()<256){
+                    result[lineCounter].append(' ');
+                }
+                lineCounter+=offset;
+            }
+        }else{
+
+            for(var k=0;k<lineNumber;++k){
+                Result[k].append('_');
+            }
+        }
+
+    }
+
+    setTextResult(result.join('\n'));
+}
+
+
 function reverseString(input){
      return input.split("").reverse().join("");
 }
@@ -188,13 +259,14 @@ function onButtonProcess(){
   </div>
 
   <div id="methodVertical">
-    <ul data-role="listview" data-inset="true">
-        <li><a href="#">Acura</a></li>
-        <li><a href="#">Audi</a></li>
-        <li><a href="#">BMW</a></li>
-        <li><a href="#">Cadillac</a></li>
-        <li><a href="#">Ferrari</a></li>
-    </ul>
+       <label for="lineWidth">每行总宽度</label>
+       <input data-clear-btn="false" name="lineWidth" id="lineWidth" value="2" type="number">
+
+       <label for="gapWitdh">间隔宽度</label>
+       <input data-clear-btn="false" name="gapWidth" id="gapWidth" value="2" type="number">
+
+       <label for="nearWidth">粗度</label>
+       <input data-clear-btn="false" name="nearWidth" id="nearWidth" value="2" type="number">
   </div>
 </div>
 
